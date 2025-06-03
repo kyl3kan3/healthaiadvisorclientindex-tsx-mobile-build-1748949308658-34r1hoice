@@ -1,0 +1,62 @@
+workflows:
+  build-app:
+    name: Build Android & iOS
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    environment:
+      vars:
+        PACKAGE_NAME: "com.aiappbuilder.healthaiadvisorclientindextsxmobilebuild174894930865834r1hoice"
+      node: 20
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm ci
+      - name: Build Web
+        script: |
+          npm run build
+      - name: Initialize Capacitor
+        script: |
+          npx cap init "HealthAiAdvisorclientindex.tsx" "com.aiappbuilder.healthaiadvisorclientindextsxmobilebuild174894930865834r1hoice" --web-dir=dist
+      - name: Build Android
+        script: |
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+      - name: Build iOS
+        script: |
+          npx cap add ios
+          npx cap sync ios
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release archive -archivePath build/App.xcarchive
+      - name: Deploy to TestFlight (Optional)
+        script: |
+          cd ios
+          gem install bundler
+          bundle init
+          echo 'gem "fastlane"' >> Gemfile
+          bundle install
+          # bundle exec fastlane beta
+        when:
+          condition: false  # Set to true when ready to deploy
+      - name: Deploy to Google Play (Optional)
+        script: |
+          cd android
+          gem install bundler
+          bundle init
+          echo 'gem "fastlane"' >> Gemfile
+          bundle install
+          # bundle exec fastlane beta
+        when:
+          condition: false  # Set to true when ready to deploy
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+      - ios/App/build/App.xcarchive
+    publishing:
+      email:
+        recipients:
+          - developer@example.com
+        notify:
+          success: true
+          failure: true
