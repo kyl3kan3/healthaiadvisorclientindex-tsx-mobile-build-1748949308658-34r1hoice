@@ -1,0 +1,30 @@
+/* Mobile-converted component styles */
+.mobile-converted {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+}
+
+button.mobile-converted {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.mobile-converted:hover {
+  background-color: #2563eb;
+}
+
+div.mobile-converted {
+  background-color: #f8fafc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mobile-converted {
+    padding: 8px;
+    margin: 3px;
+  }
+}
