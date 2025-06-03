@@ -1,0 +1,55 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: npm run build
+
+      - name: Save build log
+        run: |
+          mkdir -p logs
+          echo "Build succeeded on $(date)" > logs/build-log.txt
+        continue-on-error: true
+
+      - name: Upload build log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: logs/build-log.txt
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+          force: true
+          enable_jekyll: false
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+          commit_message: "deploy: ${{ github.sha }}"
+
+      - name: Archive production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist/
