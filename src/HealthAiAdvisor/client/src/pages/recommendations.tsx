@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { NavigationHeader } from "@/components/navigation-header";
 import { RecommendationCards } from "@/components/recommendation-cards";
