@@ -1,0 +1,16 @@
+default_platform(:android)
+
+platform :android do
+  desc "Deploy to internal testing track"
+  lane :beta do
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+    upload_to_play_store(
+      track: "internal",
+      json_key: "fastlane/google-play-key.json",
+      package_name: "com.aiappbuilder.healthaiadvisorclientindextsxmobilebuild174894930865834r1hoice"
+    )
+  end
+end
